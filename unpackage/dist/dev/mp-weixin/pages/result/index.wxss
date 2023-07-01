@@ -1,0 +1,11 @@
+
+.container {
+		padding: 15px;
+}
+.checkResult {
+		text-align: center;
+		margin-bottom: 20px;
+}
+.checkResult .title {
+		line-height: 40px;
+}
