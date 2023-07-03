@@ -3,7 +3,7 @@
     <!-- <uni-title type="h1" align="center" title="防伪查询"></uni-title> -->
     <uni-forms :model="formData" ref="form" label-position="top">
       <uni-forms-item name="securityCode">
-        <uni-easyinput focus confirmType="查验" type="text" suffixIcon="scan" v-model="formData.securityCode"
+        <uni-easyinput ref="securityCode" focus confirmType="查验" type="text" suffixIcon="scan" v-model="formData.securityCode"
           placeholder="20 位防伪码" @iconClick="scanQR"></uni-easyinput>
       </uni-forms-item>
     </uni-forms>
@@ -38,6 +38,12 @@
 
         if (code && code != 'undefined') {
           this.formData.securityCode = code;
+		  // this.$refs.securityCode.focus();
+		  
+		  uni.showToast({
+		    title: "扫码成功!",
+		    icon: "none"
+		  });
         }
       }
     },
@@ -97,6 +103,11 @@
 
             if (code && code != 'undefined') {
               this.formData.securityCode = code;
+			  
+			  uni.showToast({
+			    title: "扫码成功!",
+			    icon: "none"
+			  });
             } else {
               this.formData.securityCode = '';
               uni.showToast({

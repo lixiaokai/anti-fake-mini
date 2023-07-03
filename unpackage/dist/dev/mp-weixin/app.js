@@ -16,7 +16,7 @@ const _sfc_main = {
     console.log("App Hide");
   }
 };
-const App = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "/Users/admin/wwwroot/vue/anti-fake-mini/App.vue"]]);
+const App = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "C:/wwwroot/vue/anti-fake-mini/App.vue"]]);
 function createApp() {
   const app = common_vendor.createSSRApp(App);
   return {

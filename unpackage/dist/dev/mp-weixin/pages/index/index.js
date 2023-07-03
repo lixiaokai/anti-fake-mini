@@ -22,6 +22,10 @@ const _sfc_main = {
       console.log("code：" + code);
       if (code && code != "undefined") {
         this.formData.securityCode = code;
+        common_vendor.index.showToast({
+          title: "扫码成功!",
+          icon: "none"
+        });
       }
     }
   },
@@ -77,6 +81,10 @@ const _sfc_main = {
           console.log("code：" + code);
           if (code && code != "undefined") {
             this.formData.securityCode = code;
+            common_vendor.index.showToast({
+              title: "扫码成功!",
+              icon: "none"
+            });
           } else {
             this.formData.securityCode = "";
             common_vendor.index.showToast({
@@ -103,9 +111,10 @@ if (!Math) {
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.o($options.scanQR),
-    b: common_vendor.o(($event) => $data.formData.securityCode = $event),
-    c: common_vendor.p({
+    a: common_vendor.sr("securityCode", "648d3e90-2,648d3e90-1"),
+    b: common_vendor.o($options.scanQR),
+    c: common_vendor.o(($event) => $data.formData.securityCode = $event),
+    d: common_vendor.p({
       focus: true,
       confirmType: "查验",
       type: "text",
@@ -113,16 +122,16 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       placeholder: "20 位防伪码",
       modelValue: $data.formData.securityCode
     }),
-    d: common_vendor.p({
+    e: common_vendor.p({
       name: "securityCode"
     }),
-    e: common_vendor.sr("form", "6b6b3bf6-0"),
-    f: common_vendor.p({
+    f: common_vendor.sr("form", "648d3e90-0"),
+    g: common_vendor.p({
       model: $data.formData,
       ["label-position"]: "top"
     }),
-    g: common_vendor.o((...args) => $options.formSubmit && $options.formSubmit(...args))
+    h: common_vendor.o((...args) => $options.formSubmit && $options.formSubmit(...args))
   };
 }
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/admin/wwwroot/vue/anti-fake-mini/pages/index/index.vue"]]);
+const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "C:/wwwroot/vue/anti-fake-mini/pages/index/index.vue"]]);
 wx.createPage(MiniProgramPage);
