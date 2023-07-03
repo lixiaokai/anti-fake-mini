@@ -1,9 +1,9 @@
 <template>
 	<view class="container">
 		<view class="result">
-			<view class="btnTitle">
-				<uni-icons type="info" size="26" color="#ffffff" class="icon"></uni-icons>
-				<text class="uni-ml-5">首次查询 正品认证</text>
+			<view class="btnTitle" :class="`${btnColor}`">
+				<!-- <uni-icons type="info" size="26" color="#ffffff" class="icon"></uni-icons> -->
+				<text class="uni-ml-2">{{ queryResult }}</text>
 			</view>
 			<view class="line"></view>
 			<view class="content">
@@ -16,7 +16,7 @@
 					</uni-col>
 					<uni-col class="col right" :span="12">
 						<view class="title uni-mb-5">查询次数</view>
-						<view class="value">1</view>
+						<view class="value">{{ queryTimes }}</view>
 					</uni-col>
 				</uni-row>
 			</view>
@@ -44,21 +44,26 @@
 					</uni-list>
 				</view>
 				<view v-show="current === 1" class="uni-pt-5 serviceForm">
-					<view class="uni-mb-10 desc">
-						<text>如方便请您留下相关信息，我公司将安排专人为您提供专业的售后服务及提示</text>
+					<view class="form">
+						<view class="uni-mb-10 desc">
+							<text>{{ srvFormDataTitle }}</text>
+						</view>
+						<uni-forms ref="form" :model="srvFormData">
+							<uni-forms-item label="姓氏" required>
+								<uni-easyinput :disabled="srvFormDataDisabled" v-model="srvFormData.name"
+									placeholder="请输入姓氏" />
+							</uni-forms-item>
+							<uni-forms-item label="性别" required>
+								<uni-data-checkbox :disabled="srvFormDataDisabled" v-model="srvFormData.sex"
+									:localdata="sexs" />
+							</uni-forms-item>
+							<uni-forms-item label="手机" required>
+								<uni-easyinput :disabled="srvFormDataDisabled" v-model="srvFormData.phone" type="number"
+									placeholder="请输入手机号" />
+							</uni-forms-item>
+							<button :hidden="srvFormDataHidden" type="primary" @click="formSubmit">提交</button>
+						</uni-forms>
 					</view>
-					<uni-forms ref="form" :model="srvFormData">
-						<uni-forms-item label="姓氏" required>
-							<uni-easyinput v-model="srvFormData.name" placeholder="请输入姓氏" />
-						</uni-forms-item>
-						<uni-forms-item label="性别" required>
-							<uni-data-checkbox v-model="srvFormData.sex" :localdata="sexs" />
-						</uni-forms-item>
-						<uni-forms-item label="手机" required>
-							<uni-easyinput v-model="srvFormData.phone" type="number" placeholder="请输入手机号" />
-						</uni-forms-item>
-						<button type="primary">提交</button>
-					</uni-forms>
 				</view>
 			</view>
 		</view>
@@ -66,6 +71,7 @@
 </template>
 
 <script>
+	import graceChecker from "../../common/graceChecker.js"
 	export default {
 		data() {
 			return {
@@ -74,8 +80,12 @@
 				current: 0,
 				srvFormData: {
 					name: '',
-					sex: ''
+					sex: '',
+					phone: ''
 				},
+				srvFormDataDisabled: false,
+				srvFormDataHidden: false,
+				srvFormDataTitle: '如方便请您留下相关信息，我公司将安排专人为您提供专业的售后服务及提示',
 				sexs: [{
 					text: '先生',
 					value: 0
@@ -85,13 +95,47 @@
 				}, {
 					text: '保密',
 					value: 2
-				}]
+				}],
+				btnColor: 'green',
+				queryTimes: 1,
+				queryResult: '首次查询 正品认证',
+				location: '',
+				province: '',
+				city: '',
+				district: ''
 			}
 		},
 		methods: {
 			onClickItem(e) {
 				if (this.current != e.currentIndex) {
 					this.current = e.currentIndex;
+				}
+			},
+			formSubmit() {
+				// 定义表单规则
+				var rule = [{
+					name: "name",
+					checkType: "string",
+					checkRule: "1,5",
+					errorMsg: "姓氏不能为空"
+				}, {
+					name: "phone",
+					checkType: "string",
+					checkRule: "11,11",
+					errorMsg: "手机号不能为空或不正确"
+				}];
+				// 进行表单检查
+				var checkRes = graceChecker.check(this.srvFormData, rule);
+				if (checkRes) {
+					// todo: 临时演示用
+					this.srvFormDataDisabled = true;
+					this.srvFormDataHidden = true;
+					this.srvFormDataTitle = '感谢您选择我们的产品，近 3 天我公司将安排专人为您提供专业的售后服务及提示';
+				} else {
+					uni.showToast({
+						title: graceChecker.error,
+						icon: "none"
+					});
 				}
 			}
 		},
@@ -103,6 +147,24 @@
 			if (code && code != 'undefined') {
 				this.code = option.code
 			}
+
+			// 获取定位信息
+			// uni.getLocation({
+			// 	success: res => {
+			// 		console.log('位置信息：', res);
+			// 		this.location = res;
+			// 	},
+			// 	fail: err => {
+			// 		console.log('获取位置信息失败：', err);
+			// 	}
+			// })
+
+			// todo: 临时演示用
+			if (code && code == '222222') {
+				this.btnColor = 'red'
+				this.queryTimes = 2
+				this.queryResult = '多次查询 谨防假冒'
+			}
 		}
 	}
 </script>
@@ -111,6 +173,7 @@
 	.container {
 		padding: 15px;
 	}
+
 	.result {
 		background-color: #fff;
 		text-align: center;
@@ -119,40 +182,52 @@
 		border-radius: 10px;
 		padding: 20px 6px;
 	}
+
 	.result .btnTitle {
 		padding: 10px;
 		margin: 10px 10px 20px;
-		background-color: #4CAF50;
 		color: #fff;
 		border-radius: 4px;
 		text-align: center;
 		font-size: 16px;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 	}
+
+	.result .green {
+		background-color: #4CAF50;
+	}
+
+	.result .red {
+		background-color: #e64340;
+	}
+
 	.result .btnTitle text {
 		font-size: 20px;
 	}
+
 	.result .line {
 		border-top: 2px solid #dddddd;
 		margin: 0 10px;
 		padding: 10px 0;
 	}
+
 	.result .content .left {
 		border-right: 2px solid #dddddd;
-		box-sizing: border-box;
 	}
-	
+
 	.result .content .title {
 		color: #555;
 	}
-	
+
 	.tabTitle {
 		margin-bottom: 5px;
 	}
+
 	.tabContent .serviceForm {
 		background-color: #ffffff;
 		padding: 10px 15px;
 	}
+
 	.tabContent .serviceForm .desc {
 		font-size: 14px;
 		color: #666;

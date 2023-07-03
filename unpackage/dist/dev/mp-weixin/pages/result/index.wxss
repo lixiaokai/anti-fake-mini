@@ -13,12 +13,17 @@
 .result .btnTitle {
 		padding: 10px;
 		margin: 10px 10px 20px;
-		background-color: #4CAF50;
 		color: #fff;
 		border-radius: 4px;
 		text-align: center;
 		font-size: 16px;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.result .green {
+		background-color: #4CAF50;
+}
+.result .red {
+		background-color: #e64340;
 }
 .result .btnTitle text {
 		font-size: 20px;
@@ -30,7 +35,6 @@
 }
 .result .content .left {
 		border-right: 2px solid #dddddd;
-		box-sizing: border-box;
 }
 .result .content .title {
 		color: #555;
