@@ -71,7 +71,9 @@
 </template>
 
 <script>
-	import graceChecker from "../../common/graceChecker.js"
+	import graceChecker from "../../common/graceChecker.js";
+	import QQMapWX from '../../common/qqmap-wx-jssdk.min.js';
+	// var QQMapWX = require('../../common/qqmap-wx-jssdk.min');
 	export default {
 		data() {
 			return {
@@ -137,6 +139,84 @@
 						icon: "none"
 					});
 				}
+			},
+			getAuthorize() {
+				if (uni.getSystemInfoSync().platform !== 'mp-weixin') {
+					return;
+				}
+
+				uni.authorize({
+					scope: 'scope.userLocation',
+					success: (res) => {
+						this.getLocation()
+					},
+					fail: (err) => {
+						uni.showModal({
+							content: '需要授权位置信息',
+							confirmText: '确认授权'
+						}).then(res => {
+							if (res['confirm']) {
+								uni.openSetting({
+									success: res => {
+										if (res.authSetting['scope.userLocation']) {
+											uni.showToast({
+												title: '授权成功',
+												icon: 'none'
+											})
+										} else {
+											uni.showToast({
+												title: '授权失败',
+												icon: 'none'
+											})
+										}
+										this.getLocation()
+									}
+								})
+							}
+							if (res['cancel']) {
+								// 取消授权
+								this.getLocation()
+							}
+						})
+					}
+				})
+			},
+			getLocation() {
+				uni.getLocation({
+					success: (res) => {
+						const {
+							latitude,
+							longitude
+						} = res
+
+						const qqMapSdk = new QQMapWX({
+							key: '5LYBZ-QOW2B-PWQU4-N7U46-52PH6-MFBWD'
+						})
+						qqMapSdk.reverseGeocoder({
+							location: latitude ? `${latitude},${longitude}` : '',
+							success: (val) => {
+								console.log('城市信息', val)
+							},
+							fail: (err) => {
+								console.log('获取城市失败', err)
+							}
+						})
+					},
+					fail: (err) => {
+						if (err.errMsg === 'getLocation:fail:ERROR_NOCELL&WIFI_LOCATIONSWITCHOFF' || err
+							.errMsg === 'getLocation:fail system permission denied') {
+							uni.showModal({
+								content: '请开启手机定位服务',
+								showCancel: false
+							})
+						} else if (err.errMsg === 'getLocation:fail:system permission denied') {
+							uni.showModal({
+								content: '请给微信开启定位权限',
+								showCancel: false
+							})
+						}
+					}
+				})
 			}
 		},
 		onLoad(option) {
@@ -148,23 +228,14 @@
 				this.code = option.code
 			}
 
-			// 获取定位信息
-			// uni.getLocation({
-			// 	success: res => {
-			// 		console.log('位置信息：', res);
-			// 		this.location = res;
-			// 	},
-			// 	fail: err => {
-			// 		console.log('获取位置信息失败：', err);
-			// 	}
-			// })
-
 			// todo: 临时演示用
 			if (code && code == '222222') {
 				this.btnColor = 'red'
 				this.queryTimes = 2
 				this.queryResult = '多次查询 谨防假冒'
 			}
+
+			// this.getAuthorize();
 		}
 	}
 </script>

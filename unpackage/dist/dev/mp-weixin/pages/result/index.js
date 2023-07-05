@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const common_graceChecker = require("../../common/graceChecker.js");
+const common_qqmapWxJssdk_min = require("../../common/qqmap-wx-jssdk.min.js");
 const _sfc_main = {
   data() {
     return {
@@ -63,6 +64,80 @@ const _sfc_main = {
           icon: "none"
         });
       }
+    },
+    getAuthorize() {
+      if (common_vendor.index.getSystemInfoSync().platform !== "mp-weixin") {
+        return;
+      }
+      common_vendor.index.authorize({
+        scope: "scope.userLocation",
+        success: (res) => {
+          this.getLocation();
+        },
+        fail: (err) => {
+          common_vendor.index.showModal({
+            content: "需要授权位置信息",
+            confirmText: "确认授权"
+          }).then((res) => {
+            if (res["confirm"]) {
+              common_vendor.index.openSetting({
+                success: (res2) => {
+                  if (res2.authSetting["scope.userLocation"]) {
+                    common_vendor.index.showToast({
+                      title: "授权成功",
+                      icon: "none"
+                    });
+                  } else {
+                    common_vendor.index.showToast({
+                      title: "授权失败",
+                      icon: "none"
+                    });
+                  }
+                  this.getLocation();
+                }
+              });
+            }
+            if (res["cancel"]) {
+              this.getLocation();
+            }
+          });
+        }
+      });
+    },
+    getLocation() {
+      common_vendor.index.getLocation({
+        success: (res) => {
+          const {
+            latitude,
+            longitude
+          } = res;
+          const qqMapSdk = new common_qqmapWxJssdk_min.QQMapWX({
+            key: "5LYBZ-QOW2B-PWQU4-N7U46-52PH6-MFBWD"
+          });
+          qqMapSdk.reverseGeocoder({
+            location: latitude ? `${latitude},${longitude}` : "",
+            success: (val) => {
+              console.log("城市信息", val);
+            },
+            fail: (err) => {
+              console.log("获取城市失败", err);
+            }
+          });
+        },
+        fail: (err) => {
+          if (err.errMsg === "getLocation:fail:ERROR_NOCELL&WIFI_LOCATIONSWITCHOFF" || err.errMsg === "getLocation:fail system permission denied") {
+            common_vendor.index.showModal({
+              content: "请开启手机定位服务",
+              showCancel: false
+            });
+          } else if (err.errMsg === "getLocation:fail:system permission denied") {
+            common_vendor.index.showModal({
+              content: "请给微信开启定位权限",
+              showCancel: false
+            });
+          }
+        }
+      });
     }
   },
   onLoad(option) {

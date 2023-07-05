@@ -19,7 +19,7 @@
     "condition": false
   },
   "compileType": "miniprogram",
-  "libVersion": "2.32.3",
+  "libVersion": "",
   "appid": "wx68ca078011637670",
   "projectname": "anti-fake-mini",
   "condition": {},

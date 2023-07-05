@@ -39,10 +39,6 @@ const _sfc_main = {
       }];
       var checkRes = common_graceChecker.graceChecker.check(this.formData, rule);
       if (checkRes) {
-        common_vendor.index.showToast({
-          title: "验证通过!",
-          icon: "none"
-        });
         common_vendor.index.navigateTo({
           url: "/pages/result/index?code=" + this.formData.securityCode
         });

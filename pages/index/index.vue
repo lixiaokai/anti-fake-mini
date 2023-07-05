@@ -3,8 +3,8 @@
     <!-- <uni-title type="h1" align="center" title="防伪查询"></uni-title> -->
     <uni-forms :model="formData" ref="form" label-position="top">
       <uni-forms-item name="securityCode">
-        <uni-easyinput ref="securityCode" focus confirmType="查验" type="text" suffixIcon="scan" v-model="formData.securityCode"
-          placeholder="20 位防伪码" @iconClick="scanQR"></uni-easyinput>
+        <uni-easyinput ref="securityCode" focus confirmType="查验" type="text" suffixIcon="scan"
+          v-model="formData.securityCode" placeholder="20 位防伪码" @iconClick="scanQR"></uni-easyinput>
       </uni-forms-item>
     </uni-forms>
     <button type="primary" @click="formSubmit">开始查验</button>
@@ -38,12 +38,12 @@
 
         if (code && code != 'undefined') {
           this.formData.securityCode = code;
-		  // this.$refs.securityCode.focus();
-		  
-		  uni.showToast({
-		    title: "扫码成功!",
-		    icon: "none"
-		  });
+          // this.$refs.securityCode.focus();
+
+          uni.showToast({
+            title: "扫码成功!",
+            icon: "none"
+          });
         }
       }
     },
@@ -59,10 +59,6 @@
         // 进行表单检查
         var checkRes = graceChecker.check(this.formData, rule);
         if (checkRes) {
-          uni.showToast({
-            title: "验证通过!",
-            icon: "none"
-          });
           uni.navigateTo({
             url: "/pages/result/index?code=" + this.formData.securityCode
           });
@@ -103,11 +99,11 @@
 
             if (code && code != 'undefined') {
               this.formData.securityCode = code;
-			  
-			  uni.showToast({
-			    title: "扫码成功!",
-			    icon: "none"
-			  });
+
+              uni.showToast({
+                title: "扫码成功!",
+                icon: "none"
+              });
             } else {
               this.formData.securityCode = '';
               uni.showToast({
